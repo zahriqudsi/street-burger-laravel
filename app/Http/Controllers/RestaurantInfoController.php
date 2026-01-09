@@ -46,4 +46,28 @@ class RestaurantInfoController extends Controller
             'data' => $mappedInfo
         ]);
     }
+    public function update(Request $request, $id)
+    {
+        $info = RestaurantInfo::findOrFail($id);
+        $info->update([
+            'name' => $request->name ?? $info->name,
+            'address' => $request->address ?? $info->address,
+            'phone' => $request->phone ?? $info->phone,
+            'email' => $request->email ?? $info->email,
+            'opening_hours' => $request->openingHours ?? $request->opening_hours ?? $info->opening_hours,
+            'about_us' => $request->aboutUs ?? $request->about_us ?? $info->about_us,
+            'latitude' => $request->latitude ?? $info->latitude,
+            'longitude' => $request->longitude ?? $info->longitude,
+            'facebook_url' => $request->facebookUrl ?? $request->facebook_url ?? $info->facebook_url,
+            'instagram_url' => $request->instagramUrl ?? $request->instagram_url ?? $info->instagram_url,
+            'uber_eats_url' => $request->uberEatsUrl ?? $request->uber_eats_url ?? $info->uber_eats_url,
+            'pickme_food_url' => $request->pickmeFoodUrl ?? $request->pickme_food_url ?? $info->pickme_food_url,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Restaurant info updated successfully',
+            'data' => $info
+        ]);
+    }
 }

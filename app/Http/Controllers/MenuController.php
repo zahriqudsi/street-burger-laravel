@@ -51,6 +51,10 @@ class MenuController extends Controller
             return [
                 'id' => $item->id,
                 'categoryId' => $item->category_id,
+                'category' => $item->category ? [
+                    'id' => $item->category->id,
+                    'name' => $item->category->name,
+                ] : null,
                 'title' => $item->title,
                 'titleSi' => $item->title_si,
                 'titleTa' => $item->title_ta,
@@ -90,6 +94,10 @@ class MenuController extends Controller
             return [
                 'id' => $item->id,
                 'categoryId' => $item->category_id,
+                'category' => $item->category ? [
+                    'id' => $item->category->id,
+                    'name' => $item->category->name,
+                ] : null,
                 'title' => $item->title,
                 'titleSi' => $item->title_si,
                 'titleTa' => $item->title_ta,
@@ -128,6 +136,10 @@ class MenuController extends Controller
             return [
                 'id' => $item->id,
                 'categoryId' => $item->category_id,
+                'category' => $item->category ? [
+                    'id' => $item->category->id,
+                    'name' => $item->category->name,
+                ] : null,
                 'title' => $item->title,
                 'titleSi' => $item->title_si,
                 'titleTa' => $item->title_ta,
@@ -165,5 +177,71 @@ class MenuController extends Controller
             'message' => 'Item created',
             'data' => $item
         ], 201);
+    }
+
+    public function updateItem(Request $request, $id)
+    {
+        $item = MenuItem::findOrFail($id);
+        $item->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Item updated',
+            'data' => $item
+        ]);
+    }
+
+    public function deleteItem($id)
+    {
+        $item = MenuItem::findOrFail($id);
+        $item->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Item deleted',
+            'data' => null
+        ]);
+    }
+
+    public function addCategory(Request $request)
+    {
+        $category = MenuCategory::create([
+            'name' => $request->name,
+            'name_si' => $request->nameSi,
+            'name_ta' => $request->nameTa,
+            'display_order' => $request->displayOrder,
+            'image_url' => $request->imageUrl,
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created',
+            'data' => $category
+        ], 201);
+    }
+
+    public function updateCategory(Request $request, $id)
+    {
+        $category = MenuCategory::findOrFail($id);
+        $category->update([
+            'name' => $request->name ?? $category->name,
+            'name_si' => $request->nameSi ?? $category->name_si,
+            'name_ta' => $request->nameTa ?? $category->name_ta,
+            'display_order' => $request->displayOrder ?? $category->display_order,
+            'image_url' => $request->imageUrl ?? $category->image_url,
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated',
+            'data' => $category
+        ]);
+    }
+
+    public function deleteCategory($id)
+    {
+        $category = MenuCategory::findOrFail($id);
+        $category->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Category deleted',
+            'data' => null
+        ]);
     }
 }

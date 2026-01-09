@@ -29,7 +29,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('/generatetoken/{phoneNumber}', [AuthController::class, 'generateToken']);
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::delete('/delete/account', [AuthController::class, 'deleteAccount']);
+        Route::match(['delete', 'post'], '/delete/account', [AuthController::class, 'deleteAccount']);
     });
 });
 
@@ -38,7 +38,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], function () {
     Route::get('/me', [\App\Http\Controllers\UserController::class, 'me']);
     Route::get('/allUsers', [\App\Http\Controllers\UserController::class, 'getAllUsers']);
     Route::post('/update-push-token', [\App\Http\Controllers\UserController::class, 'updatePushToken']);
-    Route::put('/update', [\App\Http\Controllers\UserController::class, 'updateProfile']);
+    Route::match(['put', 'post'], '/update', [\App\Http\Controllers\UserController::class, 'updateProfile']);
 });
 
 // Notification Routes
@@ -49,9 +49,9 @@ Route::group(['prefix' => 'notification'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/add', [\App\Http\Controllers\NotificationController::class, 'add']);
-        Route::put('/updateById/{id}', [\App\Http\Controllers\NotificationController::class, 'update']);
-        Route::delete('/deleteById/{id}', [\App\Http\Controllers\NotificationController::class, 'delete']);
-        Route::put('/markRead/{id}', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+        Route::match(['put', 'post'], '/updateById/{id}', [\App\Http\Controllers\NotificationController::class, 'update']);
+        Route::match(['delete', 'post'], '/deleteById/{id}', [\App\Http\Controllers\NotificationController::class, 'delete']);
+        Route::match(['put', 'post'], '/markRead/{id}', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
     });
 });
 
@@ -64,6 +64,12 @@ Route::group(['prefix' => 'menu'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/items', [MenuController::class, 'addItem']);
+        Route::match(['put', 'post'], '/items/{id}', [MenuController::class, 'updateItem']);
+        Route::match(['delete', 'post'], '/items/delete/{id}', [MenuController::class, 'deleteItem']);
+
+        Route::post('/categories', [MenuController::class, 'addCategory']);
+        Route::match(['put', 'post'], '/categories/{id}', [MenuController::class, 'updateCategory']);
+        Route::match(['delete', 'post'], '/categories/delete/{id}', [MenuController::class, 'deleteCategory']);
     });
 });
 
@@ -75,9 +81,9 @@ Route::group(['prefix' => 'reservations'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/add', [ReservationController::class, 'addReservation']);
-        Route::put('/update/{id}', [ReservationController::class, 'updateReservation']);
-        Route::delete('/delete/{id}', [ReservationController::class, 'cancelReservation']);
-        Route::put('/confirm/{id}', [ReservationController::class, 'confirmReservation']);
+        Route::match(['put', 'post'], '/update/{id}', [ReservationController::class, 'updateReservation']);
+        Route::match(['delete', 'post'], '/delete/{id}', [ReservationController::class, 'cancelReservation']);
+        Route::match(['put', 'post'], '/confirm/{id}', [ReservationController::class, 'confirmReservation']);
     });
 });
 
@@ -88,12 +94,17 @@ Route::group(['prefix' => 'reviews'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/add/{phoneNumber}', [ReviewController::class, 'addReview']);
+        Route::match(['delete', 'post'], '/delete/{id}', [ReviewController::class, 'deleteReview']);
     });
 });
 
 // Restaurant Info Routes
 Route::group(['prefix' => 'restaurant-info'], function () {
     Route::get('/get/all', [\App\Http\Controllers\RestaurantInfoController::class, 'getAll']);
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::match(['put', 'post'], '/update/{id}', [\App\Http\Controllers\RestaurantInfoController::class, 'update']);
+    });
 });
 
 // Reward Routes (Front-end uses /api/rwdpts)
@@ -109,7 +120,7 @@ Route::group(['prefix' => 'chefs'], function () {
     Route::get('/', [ChefController::class, 'getAll']);
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/', [ChefController::class, 'add']);
-        Route::delete('/{id}', [ChefController::class, 'delete']);
+        Route::match(['delete', 'post'], '/{id}', [ChefController::class, 'delete']);
     });
 });
 
@@ -118,7 +129,7 @@ Route::group(['prefix' => 'gallery'], function () {
     Route::get('/', [GalleryController::class, 'getAll']);
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/', [GalleryController::class, 'add']);
-        Route::delete('/{id}', [GalleryController::class, 'delete']);
+        Route::match(['delete', 'post'], '/{id}', [GalleryController::class, 'delete']);
     });
 });
 
@@ -128,6 +139,6 @@ Route::group(['prefix' => 'orders'], function () {
         Route::post('/add', [OrderController::class, 'placeOrder']);
         Route::get('/mine', [OrderController::class, 'getMyOrders']);
         Route::get('/all', [OrderController::class, 'getAllOrders']);
-        Route::put('/update-status/{id}', [OrderController::class, 'updateStatus']);
+        Route::match(['put', 'post'], '/update-status/{id}', [OrderController::class, 'updateStatus']);
     });
 });

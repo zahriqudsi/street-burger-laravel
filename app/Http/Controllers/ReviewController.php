@@ -102,6 +102,17 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function deleteReview($id)
+    {
+        $review = Review::findOrFail($id);
+        $review->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Review deleted',
+            'data' => null
+        ]);
+    }
+
     private function mapReview($item)
     {
         return [
